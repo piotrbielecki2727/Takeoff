@@ -1,0 +1,81 @@
+.RegisterContainer {
+    background-color: rgb(255, 255, 255);
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    -webkit-box-shadow: 8px 9px 29px -8px rgba(66, 68, 90, 1);
+    -moz-box-shadow: 8px 9px 29px -8px rgba(66, 68, 90, 1);
+    box-shadow: 8px 9px 29px -8px rgba(66, 68, 90, 1);
+    width: 800px;
+    height: 500px;
+    border-radius: 10px;
+}
+
+.LogoImage {
+    max-width: 250px;
+    margin: auto;
+}
+
+.ColLeftText {
+    color: #ffffff;
+}
+
+
+
+.ColLeft {
+    border-radius: 10px 0px 0px 10px;
+    background: rgb(28,161,186);
+    background: linear-gradient(90deg, rgba(28,161,186,1) 0%, rgba(137,223,240,1) 49%, rgba(197,235,242,1) 100%);
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    height: 500px;
+
+}
+
+.ColRight {
+    position: absolute;
+    top: 50%;
+    left: 70%;
+    transform: translate(-50%, -50%);
+}
+
+@media (max-width: 767px) {
+    .RegisterContainer {
+        width: 90%; 
+        height: auto; 
+        display: flex;
+        flex-direction: column; 
+    }
+
+    .ColLeft {
+        border-radius: 10px 10px 0px 0px; /* Zaokrąglamy górne narożniki na mniejszych ekranach */
+        height: auto; 
+    }
+
+    .LogoImage {
+        max-width: 150px;
+        margin: auto;
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .ColRight {
+        position: relative; 
+        left: auto; 
+        transform: none; 
+    }
+}
+
+
+
+
+
+
+
+

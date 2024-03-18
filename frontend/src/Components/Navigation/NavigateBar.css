@@ -1,0 +1,35 @@
+.Navbar {
+    background: linear-gradient(90deg, rgba(28, 161, 186, 1) 0%, rgba(137, 223, 240, 1) 49%, rgba(197, 235, 242, 1) 100%);
+
+}
+
+.NavbarLogoImage {
+    max-width: 115px;
+}
+
+.NavLink {
+    color: #ffffff;
+    transition: all 0.3s ease-in-out;
+    margin-right: 25px;
+    font-size: 18px;
+}
+
+.NavLink:hover, .NavLink1:hover {
+    transform: scale(1.1);
+    color: #ffffff;
+}
+
+.NavBarIcon {
+    margin-right: 4px;
+}
+
+.NavLink1 {
+     margin-left: auto;
+     margin-right: 15px;
+     padding: 15px;
+     border-radius: 10px;
+     color: #ffffff;
+     transition: all 0.3s ease-in-out;
+     box-shadow: 8px 9px 29px -8px rgba(66, 68, 90, 0.5);
+
+}
