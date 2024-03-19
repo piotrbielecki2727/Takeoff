@@ -1,21 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, forwardRef } from 'react';
 import { Fade } from 'react-bootstrap';
 
-const PrintHello: React.FC = () => {
-    const texts: string[] = ["Hello", "Aloha", "Witaj",  "Bonjour", "Hola",  "Ciao", "Hallå", "Hola", "Hi"  ];
+const PrintHello = forwardRef<HTMLDivElement>((props, ref) => {
+    const texts: string[] = ["Hello", "Aloha", "Witaj", "Bonjour", "Hola", "Ciao", "Hallå", "Hola", "Hi"];
     const [index, setIndex] = useState<number>(0);
     const [visible, setVisible] = useState<boolean>(true);
 
 
     useEffect(() => {
         const interval = setInterval(() => {
-            setVisible(false); // Ustaw widoczność na false, aby wywołać animację fade-out
+            setVisible(false);
             setTimeout(() => {
                 setIndex((prevIndex) => (prevIndex + 1) % texts.length);
-                setVisible(true); // Ustaw widoczność na true, aby wywołać animację fade-in
-            }, 400); // Odczekaj 500 ms przed zmianą tekstu
+                setVisible(true);
+            }, 400);
 
-        }, 3000); // zmiana tekstu co 3 sekundy
+        }, 3000);
 
         return () => clearInterval(interval);
     }, []);
@@ -27,6 +27,6 @@ const PrintHello: React.FC = () => {
             </Fade>
         </div>
     );
-};
+});
 
 export default PrintHello;
