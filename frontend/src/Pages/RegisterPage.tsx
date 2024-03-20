@@ -1,8 +1,8 @@
 import React from "react";
-import Register from "../Components/Register/Register";
+import LoginRegisterWindow from "../Components/RegisterAndLogin/LoginRegisterWindow";
 
 const RegisterPage: React.FC = () => {
-  return <Register/>;
+  return <LoginRegisterWindow />
 };
 
 export default RegisterPage;

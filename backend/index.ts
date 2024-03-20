@@ -1,14 +1,16 @@
-import express, {Express, Request, Response} from "express";
+import express, { Express } from "express";
+import cors from "cors";
+import { RegisterRouter } from "./RegisterAndLogin/RegisterRoutes";
+
 const port = 3001;
-const app: Express= express();
+const app: Express = express();
 
-app.get("/", (req: Request, res: Response) => {
-res.send("xdddd")
-});
+app.use(cors());
+app.use(express.json());
 
-app.get("/hi", (req: Request, res: Response) => {
-    res.send("hissii")
-    });
+
+app.use('/', RegisterRouter);
+
 
 app.listen(port, () => {
     console.log("Server is running...")

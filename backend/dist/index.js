@@ -4,14 +4,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
+const cors_1 = __importDefault(require("cors"));
+const RegisterRoutes_1 = require("./RegisterAndLogin/RegisterRoutes");
 const port = 3001;
 const app = (0, express_1.default)();
-app.get("/", (req, res) => {
-    res.send("xdddd");
-});
-app.get("/hi", (req, res) => {
-    res.send("hissii");
-});
+app.use((0, cors_1.default)());
+app.use(express_1.default.json());
+app.use('/', RegisterRoutes_1.RegisterRouter);
 app.listen(port, () => {
     console.log("Server is running...");
 });
