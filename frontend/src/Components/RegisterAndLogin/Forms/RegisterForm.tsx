@@ -32,9 +32,9 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ formState, setFormState }) 
         event.preventDefault();
         const validationErrors = ValidateData(formValues)
         setErrors(validationErrors);
-        console.log(validationErrors);
         if (Object.keys(validationErrors).every(key => validationErrors[key].length === 0)) {
-            Register(formValues); 
+            console.log("brak errorow");
+            Register(formValues);
         }
     }
 
@@ -87,7 +87,7 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ formState, setFormState }) 
                 {errors.password && <p className="FormsErrors">{errors.password}</p>}
                 <Form.Group className="FormGroup" controlId="exampleForm.ControlInput1">
                     <Form.Check
-                        checked={formValues.acceptedTerms}
+                        
                         name="acceptedTerms"
                         onChange={onChangeFormValues}
                         className="RadioCheck"

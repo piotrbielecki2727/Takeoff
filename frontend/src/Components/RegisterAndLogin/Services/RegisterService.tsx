@@ -1,14 +1,14 @@
 import axios from "axios";
-import { REGISTER_USER } from "../../../UrlAdresses";
 import { FormValues } from "../Types";
+import { REGISTER_USER } from "../../../UrlAdresses";
 
 
 
 export const Register = async (formValues: FormValues) => {
+    console.log("Wysylam", formValues);
     try {
-        console.log("Ślę", formValues);
         const response = await axios.post(REGISTER_USER, formValues);
-        console.log("Ślę", response.data);
+        console.log("Wysylam", formValues);
     } catch (error) {
         console.error('Error', error);
     }
