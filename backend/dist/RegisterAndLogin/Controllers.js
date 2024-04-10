@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.handleLoginController = exports.handleRegisterController = void 0;
+exports.getUsersController = exports.handleLoginController = exports.handleRegisterController = void 0;
 const Services_1 = require("./Services");
 function handleRegisterController(req, res) {
     return __awaiter(this, void 0, void 0, function* () {
@@ -37,29 +37,37 @@ function handleLoginController(req, res) {
         try {
             const emailExists = yield (0, Services_1.checkEmailExistService)(formValues.email);
             if (!emailExists) {
-                return res.json({ Error: "Email doesn't exist" });
+                return res.json({ Error: "Email doesn't exist", errorType: "email" });
             }
-            else {
-                const receivedPassword = yield (0, Services_1.getUserPasswordService)(formValues.email);
-                try {
-                    const result = yield (0, Services_1.loginUserService)(req.body, receivedPassword);
-                    return res.json({ Success: result });
-                }
-                catch (error) {
-                    if (error === "Incorrect password!") {
-                        return res.json({ Error: "Incorrect password!" });
-                    }
-                    else {
-                        console.error("Error during logging in:", error);
-                        return res.json({ Error: "Error during logging in.", error });
-                    }
-                }
-            }
+            const receivedPassword = yield (0, Services_1.getUserPasswordService)(formValues.email);
+            const result = yield (0, Services_1.loginUserService)(req.body, receivedPassword);
+            const userDetails = yield (0, Services_1.getUserDetails)(formValues.email);
+            const token = yield (0, Services_1.generateJWTToken)(formValues.email, userDetails.isAdmin);
+            console.log(token);
+            return res.json({ Success: "Logged in!", token: token, isAdmin: userDetails.isAdmin });
         }
         catch (error) {
-            console.error("Error during logging in:", error);
-            return res.json({ Error: "Error during logging in.", error });
+            if (error === "Incorrect password!") {
+                return res.json({ Error: "Incorrect password!", errorType: "password" });
+            }
+            else {
+                console.error("Error during logging in:", error);
+                return res.json({ Error: "Error during logging in.", error });
+            }
         }
     });
 }
 exports.handleLoginController = handleLoginController;
+function getUsersController(req, res) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const result = yield (0, Services_1.getUsers)();
+            return res.json({ Success: "User list retrieved successfully.", result });
+        }
+        catch (error) {
+            console.error("Error while getting users:", error);
+            return res.status(500).json({ Error: "Internal server error." });
+        }
+    });
+}
+exports.getUsersController = getUsersController;

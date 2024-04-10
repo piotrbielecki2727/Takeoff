@@ -1,8 +1,25 @@
 import { db } from '../index';
-import { HashPassword } from "./HashPassword";
-import { isPasswordMatch } from "./isPasswordMatch";
+import jwt from 'jsonwebtoken';
+import { HashPassword } from "./Utils/HashPassword";
+import { PasswordMatch } from "./Utils/PasswordMatch";
 import Queries from "./Queries";
 import { FormValues } from './Types';
+
+
+export async function getUserDetails(email: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+        db.query(Queries.GET_USER_DETAILS, [email], (err, result) => {
+            if (err) {
+                console.error("Error while retrieving user details", err);
+                reject(err);
+            } else {
+                const userDetails = result[0];
+                resolve(userDetails);
+            }
+        });
+    });
+}
+
 
 export async function checkEmailExistService(email: string): Promise<boolean> {
     return new Promise((resolve, reject) => {
@@ -21,7 +38,7 @@ export async function getUserPasswordService(email: string): Promise<string> {
     return new Promise((resolve, reject) => {
         db.query(Queries.GET_USER_PASSWORD, [email], (err, result) => {
             if (err) {
-                console.error("Error while getting user password.", err);
+                console.error("Error while retrieving user password.", err);
                 reject(err);
             } else {
                 const password = result[0].password;
@@ -48,19 +65,43 @@ export async function registerUserService(name: string, email: string, password:
 
 
 export function loginUserService(formValues: FormValues, dbPassword: string): Promise<string> {
+    return new Promise(async (resolve, reject) => {
+        const checkIfMatch = await PasswordMatch(formValues.password, dbPassword);
+        if (!checkIfMatch) {
+            reject("Incorrect password!");
+        } else {
+            resolve("Successfully logged in!");
+        }
+    });
+}
+
+
+export function getUsers(): Promise<any> {
     return new Promise((resolve, reject) => {
-        db.query(Queries.LOGIN, [formValues.password, formValues.email], async (err, result) => {
+        db.query(Queries.GET_USERS, async (err, result) => {
             if (err) {
                 reject("Error while logging in");
             } else {
-                const checkIfMatch = await isPasswordMatch(formValues.password, dbPassword);
-                if (!checkIfMatch) {
-                    reject("Incorrect password!");
-                } else {
-                    resolve("Successfuly logged in!");
-                }
+                console.log(result);
+                resolve(result);
             }
-        });
+        }
+        );
     })
 }
+
+export async function generateJWTToken(email: string, isAdmin: boolean): Promise<any> {
+    return new Promise((resolve, reject) => {
+        jwt.sign({ email, isAdmin }, 'secret_key', { expiresIn: '1h' }, (err, token) => {
+            if (err) {
+                console.error("Error while generating JWT token", err);
+                reject(err);
+            } else {
+                resolve(token);
+            }
+        });
+    });
+}
+
+
 

@@ -19,9 +19,7 @@ const app: Express = express();
 app.use(cors());
 app.use(express.json());
 
-
 app.use('/', RegisterAndLoginRoutes);
-
 
 app.listen(port, () => {
     console.log("Server is running...")

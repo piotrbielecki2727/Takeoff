@@ -1,23 +1,28 @@
 import React from "react";
-import { Button } from "react-bootstrap";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { IconProp, SizeProp } from '@fortawesome/fontawesome-svg-core'
 
 interface PrintButtonProps {
-  className?: string;
-  onClick: () => void;
-  buttonText: string;
+  className: string;
+  onClick?: () => void;
+  buttonText?: string;
+  iconName?: IconProp;
   disabled?: boolean;
+  size?: SizeProp;
 }
 
 const PrintButton: React.FC<PrintButtonProps> = ({
-  className = "",
+  className,
   onClick,
   buttonText,
+  iconName,
+  size = 'xl',
   disabled = false,
 }) => {
   return (
-    <Button className={className} onClick={onClick} disabled={disabled}>
-      {buttonText}
-    </Button>
+    <button className={className} onClick={onClick} disabled={disabled}>
+      {iconName && <FontAwesomeIcon size={size} icon={iconName} />} {buttonText}
+    </button>
   );
 };
 

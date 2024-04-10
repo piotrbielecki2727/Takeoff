@@ -1,10 +1,11 @@
 .Navbar {
     background: linear-gradient(90deg, rgba(28, 161, 186, 1) 0%, rgba(137, 223, 240, 1) 49%, rgba(197, 235, 242, 1) 100%);
-
+    padding: 15px;
 }
 
 .NavbarLogoImage {
-    max-width: 115px;
+    max-width: 95px;
+    
 }
 
 .NavLink {
@@ -12,6 +13,7 @@
     transition: all 0.3s ease-in-out;
     margin-right: 25px;
     font-size: 18px;
+    text-decoration: none;
 }
 
 .NavLink:hover, .NavLink1:hover {

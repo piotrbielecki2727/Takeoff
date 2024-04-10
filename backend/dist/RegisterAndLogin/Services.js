@@ -12,11 +12,29 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loginUserService = exports.registerUserService = exports.getUserPasswordService = exports.checkEmailExistService = void 0;
+exports.generateJWTToken = exports.getUsers = exports.loginUserService = exports.registerUserService = exports.getUserPasswordService = exports.checkEmailExistService = exports.getUserDetails = void 0;
 const index_1 = require("../index");
-const HashPassword_1 = require("./HashPassword");
-const isPasswordMatch_1 = require("./isPasswordMatch");
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
+const HashPassword_1 = require("./Utils/HashPassword");
+const PasswordMatch_1 = require("./Utils/PasswordMatch");
 const Queries_1 = __importDefault(require("./Queries"));
+function getUserDetails(email) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise((resolve, reject) => {
+            index_1.db.query(Queries_1.default.GET_USER_DETAILS, [email], (err, result) => {
+                if (err) {
+                    console.error("Error while retrieving user details", err);
+                    reject(err);
+                }
+                else {
+                    const userDetails = result[0];
+                    resolve(userDetails);
+                }
+            });
+        });
+    });
+}
+exports.getUserDetails = getUserDetails;
 function checkEmailExistService(email) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => {
@@ -38,7 +56,7 @@ function getUserPasswordService(email) {
         return new Promise((resolve, reject) => {
             index_1.db.query(Queries_1.default.GET_USER_PASSWORD, [email], (err, result) => {
                 if (err) {
-                    console.error("Error while getting user password.", err);
+                    console.error("Error while retrieving user password.", err);
                     reject(err);
                 }
                 else {
@@ -69,21 +87,44 @@ function registerUserService(name, email, password) {
 }
 exports.registerUserService = registerUserService;
 function loginUserService(formValues, dbPassword) {
+    return new Promise((resolve, reject) => __awaiter(this, void 0, void 0, function* () {
+        const checkIfMatch = yield (0, PasswordMatch_1.PasswordMatch)(formValues.password, dbPassword);
+        if (!checkIfMatch) {
+            reject("Incorrect password!");
+        }
+        else {
+            resolve("Successfully logged in!");
+        }
+    }));
+}
+exports.loginUserService = loginUserService;
+function getUsers() {
     return new Promise((resolve, reject) => {
-        index_1.db.query(Queries_1.default.LOGIN, [formValues.password, formValues.email], (err, result) => __awaiter(this, void 0, void 0, function* () {
+        index_1.db.query(Queries_1.default.GET_USERS, (err, result) => __awaiter(this, void 0, void 0, function* () {
             if (err) {
                 reject("Error while logging in");
             }
             else {
-                const checkIfMatch = yield (0, isPasswordMatch_1.isPasswordMatch)(formValues.password, dbPassword);
-                if (!checkIfMatch) {
-                    reject("Incorrect password!");
-                }
-                else {
-                    resolve("Successfuly logged in!");
-                }
+                console.log(result);
+                resolve(result);
             }
         }));
     });
 }
-exports.loginUserService = loginUserService;
+exports.getUsers = getUsers;
+function generateJWTToken(email, isAdmin) {
+    return __awaiter(this, void 0, void 0, function* () {
+        return new Promise((resolve, reject) => {
+            jsonwebtoken_1.default.sign({ email, isAdmin }, 'secret_key', { expiresIn: '1h' }, (err, token) => {
+                if (err) {
+                    console.error("Error while generating JWT token", err);
+                    reject(err);
+                }
+                else {
+                    resolve(token);
+                }
+            });
+        });
+    });
+}
+exports.generateJWTToken = generateJWTToken;

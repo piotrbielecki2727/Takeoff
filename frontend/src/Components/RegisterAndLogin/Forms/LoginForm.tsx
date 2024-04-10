@@ -11,6 +11,8 @@ import ChangeFormState from "../Utils/ChangeFormState";
 import { useFormValues } from "../Utils/ChangeFormValues";
 import { ValidateData } from "../Utils/DataValidation";
 import { Login } from "../Services/LoginService";
+import { Navigate, redirect, useNavigate } from "react-router";
+
 
 
 interface LoginFormProps {
@@ -20,7 +22,7 @@ interface LoginFormProps {
 
 
 const LoginForm: React.FC<LoginFormProps> = ({ formState, setFormState }) => {
-
+    const navigate = useNavigate();
     const { formValues, onChangeFormValues } = useFormValues();
     const [errors, setErrors] = useState<any>({});
     const [loginValidation, setLoginValidation] = useState<string>('login');
@@ -29,14 +31,25 @@ const LoginForm: React.FC<LoginFormProps> = ({ formState, setFormState }) => {
         ChangeFormState(formState, setFormState);
     }
 
-    const handleOnSubmitForm = (event: {
+    const handleOnSubmitForm = async (event: {
         currentTarget: any; preventDefault: () => void;
     }) => {
         event.preventDefault();
-        const validationErrors = ValidateData(formValues, loginValidation)
+        const validationErrors = await ValidateData(formValues, loginValidation)
         setErrors(validationErrors);
         if (Object.keys(validationErrors).every(key => validationErrors[key].length === 0)) {
-            Login(formValues);
+            const result = await Login(formValues);
+
+            if (result.errorType === "email") {
+                setErrors({ email: result.Error });
+            }
+            else if (result.errorType === "password") {
+                setErrors({ password: result.Error });
+            }
+            else {
+                navigate("/");
+            }
+
         }
     }
 
@@ -63,8 +76,10 @@ const LoginForm: React.FC<LoginFormProps> = ({ formState, setFormState }) => {
                         placeholder="Enter your email..."
                     />
 
+                    {errors.email && <p className="FormsErrors">{errors.email}</p>}
+
                 </Form.Group>
-                {errors.email && <p className="FormsErrors">{errors.email}</p>}
+
 
                 <Form.Group className="FormGroup" controlId="FormGroupPassword">
                     <Form.Label className="FormLabel"><FontAwesomeIcon size="lg" icon={faLock} /></Form.Label>
@@ -76,14 +91,17 @@ const LoginForm: React.FC<LoginFormProps> = ({ formState, setFormState }) => {
                         type="password"
                         placeholder="Enter your password..."
                     />
+                    {errors.password && (
+                        <p className="FormsErrors">{errors.password}</p>
+                    )}
 
                 </Form.Group>
-                {errors.password && <p className="FormsErrors">{errors.password}</p>}
 
 
                 <span className="ForgotPasswordText">Forgot password?</span>
                 <Button className="signInButton" type="submit">Sign in</Button>
             </Form >
+
             <div className="signinsignupChange">Don't have an account? Click <a className="LinkText" onClick={handleChangeFormState}> here </a> to sign up!</div>
             <Container className="OrSignInWithContainer">
                 <Row>

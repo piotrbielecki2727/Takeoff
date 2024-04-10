@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import './RegisterForm.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faEnvelope, faLock, faUser } from '@fortawesome/free-solid-svg-icons'
-import { Button, Form, InputGroup } from "react-bootstrap";
+import { Button, Form } from "react-bootstrap";
 import ChangeFormState from "../Utils/ChangeFormState";
 import { useFormValues } from "../Utils/ChangeFormValues";
 import { Register } from "../Services/RegisterService";
@@ -27,14 +27,21 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ formState, setFormState }) 
     }
 
 
-    const handleOnSubmitForm = (event: {
+    const handleOnSubmitForm = async (event: {
         currentTarget: any; preventDefault: () => void;
     }) => {
         event.preventDefault();
-        const validationErrors = ValidateData(formValues, registerValidation)
+        const validationErrors = await ValidateData(formValues, registerValidation)
         setErrors(validationErrors);
         if (Object.keys(validationErrors).every(key => validationErrors[key].length === 0)) {
-            Register(formValues);
+            const registerErrors = await Register(formValues);
+            if (registerErrors) {
+                setErrors({ email: registerErrors });
+            }
+            else {
+                setFormState('signin')
+            }
+
         }
     }
 
@@ -55,8 +62,10 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ formState, setFormState }) 
                         className="FormControl" type="text"
                         placeholder="Enter your name..."
                     />
+
+                    {errors.name && <p className="FormsErrors">{errors.name}</p>}
+
                 </Form.Group>
-                {errors.name && <p className="FormsErrors">{errors.name}</p>}
 
                 <Form.Group className="FormGroup" controlId="FormGroupEmail">
                     <Form.Label className="FormLabel"><FontAwesomeIcon size="lg" icon={faEnvelope} /></Form.Label>
@@ -69,8 +78,10 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ formState, setFormState }) 
                         placeholder="Enter your email..."
 
                     />
+
+                    {errors.email && <p className="FormsErrors">{errors.email}</p>}
+
                 </Form.Group>
-                {errors.email && <p className="FormsErrors">{errors.email}</p>}
 
                 <Form.Group className="FormGroup" controlId="FormGroupPassword">
                     <Form.Label className="FormLabel"><FontAwesomeIcon size="lg" icon={faLock} /></Form.Label>
@@ -82,10 +93,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ formState, setFormState }) 
                         type="password"
                         placeholder="Enter your password..."
                     />
+                    {errors.password && <p className="FormsErrors">{errors.password}</p>}
+
                 </Form.Group>
 
-                {errors.password && <p className="FormsErrors">{errors.password}</p>}
-                <Form.Group className="FormGroup" controlId="exampleForm.ControlInput1">
+                <Form.Group className="FormGroup" controlId="FormGroupTerms">
                     <Form.Check
 
                         name="acceptedTerms"
@@ -94,9 +106,11 @@ const RegisterForm: React.FC<RegisterFormProps> = ({ formState, setFormState }) 
                         type="radio"
                         label="Accept the terms and conditions"
                     />
+
+                    {errors.acceptedTerms && <p className="CheckFormError">{errors.acceptedTerms}</p>}
+
                 </Form.Group>
 
-                {errors.acceptedTerms && <p className="CheckFormError">{errors.acceptedTerms}</p>}
 
                 <Button className="signUpButton" type="submit">Sign up</Button>
             </Form >

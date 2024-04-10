@@ -4,14 +4,15 @@ import { LOGIN_USER } from "../../../UrlAdresses";
 
 
 
+
 export const Login = async (formValues: FormValues) => {
     try {
         const response = await axios.post(LOGIN_USER, formValues);
         if (response.data.Success) {
-            console.log(response.data.Success);
+            return (response.data);
         }
         if (response.data.Error) {
-            console.log(response.data.Error);
+            return (response.data);
         }
     }
     catch (error) {
