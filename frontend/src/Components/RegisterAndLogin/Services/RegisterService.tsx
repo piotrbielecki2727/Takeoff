@@ -7,12 +7,11 @@ export const Register = async (formValues: FormValues) => {
         const response = await axios.post(REGISTER_USER, formValues);
         if (response.data.Success) {
             {
-
+                return;
             }
         }
         if (response.data.Error) {
             {
-                console.log(response.data.Error)
                 return response.data.Error;
             }
         }

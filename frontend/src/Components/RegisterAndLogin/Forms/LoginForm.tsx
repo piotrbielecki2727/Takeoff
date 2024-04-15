@@ -11,7 +11,8 @@ import ChangeFormState from "../Utils/ChangeFormState";
 import { useFormValues } from "../Utils/ChangeFormValues";
 import { ValidateData } from "../Utils/DataValidation";
 import { Login } from "../Services/LoginService";
-import { Navigate, redirect, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
+
 
 
 
@@ -38,21 +39,24 @@ const LoginForm: React.FC<LoginFormProps> = ({ formState, setFormState }) => {
         const validationErrors = await ValidateData(formValues, loginValidation)
         setErrors(validationErrors);
         if (Object.keys(validationErrors).every(key => validationErrors[key].length === 0)) {
-            const result = await Login(formValues);
+            try {
+                const result = await Login(formValues);
+                if (result.errorType === "email") {
+                    setErrors({ email: result.Error });
+                }
+                else if (result.errorType === "password") {
+                    setErrors({ password: result.Error });
+                }
+                else {
+                    navigate("/");
+                }
+            }
+            catch (error) {
+                setErrors({ loginError: "Error when logging in" });
 
-            if (result.errorType === "email") {
-                setErrors({ email: result.Error });
             }
-            else if (result.errorType === "password") {
-                setErrors({ password: result.Error });
-            }
-            else {
-                navigate("/");
-            }
-
         }
     }
-
 
 
 
@@ -94,6 +98,9 @@ const LoginForm: React.FC<LoginFormProps> = ({ formState, setFormState }) => {
                     {errors.password && (
                         <p className="FormsErrors">{errors.password}</p>
                     )}
+
+                    {errors.loginError && (<p className="LoginRegisterError">{errors.loginError}</p>)}
+
 
                 </Form.Group>
 

@@ -20,7 +20,7 @@ function handleRegisterController(req, res) {
                 return res.json({ Error: "Email already exists." });
             }
             else {
-                const result = yield (0, Services_1.registerUserService)(formValues.name, formValues.email, formValues.password);
+                const result = yield (0, Services_1.registerUserService)(formValues.name, formValues.email, formValues.password, formValues.role);
                 return res.json({ Success: "User successfully registered." });
             }
         }
@@ -42,9 +42,8 @@ function handleLoginController(req, res) {
             const receivedPassword = yield (0, Services_1.getUserPasswordService)(formValues.email);
             const result = yield (0, Services_1.loginUserService)(req.body, receivedPassword);
             const userDetails = yield (0, Services_1.getUserDetails)(formValues.email);
-            const token = yield (0, Services_1.generateJWTToken)(formValues.email, userDetails.isAdmin);
-            console.log(token);
-            return res.json({ Success: "Logged in!", token: token, isAdmin: userDetails.isAdmin });
+            const token = yield (0, Services_1.generateJWTToken)(userDetails.Id, userDetails.Role);
+            return res.json({ Success: "Logged in!", token: token });
         }
         catch (error) {
             if (error === "Incorrect password!") {

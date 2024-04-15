@@ -10,6 +10,7 @@ function GenerateToken(userId, isAdmin) {
         userId: userId,
         isAdmin: isAdmin
     };
+    console.log("lol", payload);
     return jsonwebtoken_1.default.sign(payload, 'superSecretPrivateKey', { expiresIn: '1h' });
 }
 exports.GenerateToken = GenerateToken;

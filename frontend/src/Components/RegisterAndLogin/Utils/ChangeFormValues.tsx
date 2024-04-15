@@ -7,7 +7,9 @@ export const useFormValues = () => {
         name: '',
         email: '',
         password: '',
+        role: 'USER',
         acceptedTerms: false,
+
     })
 
 

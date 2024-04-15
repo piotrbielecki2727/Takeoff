@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateJWTToken = exports.getUsers = exports.loginUserService = exports.registerUserService = exports.getUserPasswordService = exports.checkEmailExistService = exports.getUserDetails = void 0;
+exports.generateJWTToken = exports.getUsers = exports.logoutUserService = exports.loginUserService = exports.registerUserService = exports.getUserPasswordService = exports.checkEmailExistService = exports.getUserDetails = void 0;
 const index_1 = require("../index");
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const HashPassword_1 = require("./Utils/HashPassword");
@@ -68,17 +68,16 @@ function getUserPasswordService(email) {
     });
 }
 exports.getUserPasswordService = getUserPasswordService;
-function registerUserService(name, email, password) {
+function registerUserService(name, email, password, role) {
     return __awaiter(this, void 0, void 0, function* () {
         const hashedPassword = yield (0, HashPassword_1.HashPassword)(password);
         return new Promise((resolve, reject) => {
-            index_1.db.query(Queries_1.default.REGISTER, [name, email, hashedPassword], (err, result) => {
+            index_1.db.query(Queries_1.default.REGISTER, [name, email, hashedPassword, role], (err, result) => {
                 if (err) {
                     console.error("Error while adding data to database.", err);
                     reject(err);
                 }
                 else {
-                    console.log("User successfully registered.");
                     resolve(result);
                 }
             });
@@ -98,6 +97,17 @@ function loginUserService(formValues, dbPassword) {
     }));
 }
 exports.loginUserService = loginUserService;
+function logoutUserService(res) {
+    return new Promise((resolve, reject) => {
+        try {
+            res.clearCookie('token');
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+}
+exports.logoutUserService = logoutUserService;
 function getUsers() {
     return new Promise((resolve, reject) => {
         index_1.db.query(Queries_1.default.GET_USERS, (err, result) => __awaiter(this, void 0, void 0, function* () {
@@ -105,17 +115,16 @@ function getUsers() {
                 reject("Error while logging in");
             }
             else {
-                console.log(result);
                 resolve(result);
             }
         }));
     });
 }
 exports.getUsers = getUsers;
-function generateJWTToken(email, isAdmin) {
+function generateJWTToken(userId, role) {
     return __awaiter(this, void 0, void 0, function* () {
         return new Promise((resolve, reject) => {
-            jsonwebtoken_1.default.sign({ email, isAdmin }, 'secret_key', { expiresIn: '1h' }, (err, token) => {
+            jsonwebtoken_1.default.sign({ userId, role }, 'VerySecretKey', { expiresIn: '1h' }, (err, token) => {
                 if (err) {
                     console.error("Error while generating JWT token", err);
                     reject(err);

@@ -11,6 +11,7 @@
     "@testing-library/user-event": "^13.5.0",
     "@types/jest": "^27.5.2",
     "@types/js-cookie": "^3.0.6",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^16.18.86",
     "@types/react": "^18.2.63",
     "@types/react-dom": "^18.2.20",
@@ -21,6 +22,9 @@
     "antd": "^5.15.1",
     "axios": "^1.6.8",
     "bootstrap": "^5.3.3",
+    "js-cookie": "^3.0.5",
+    "jsonwebtoken": "^9.0.2",
+    "jwt-decode": "^4.0.0",
     "react": "^18.2.0",
     "react-bootstrap": "^2.10.1",
     "react-dom": "^18.2.0",
@@ -30,6 +34,7 @@
     "redux": "^4.2.1",
     "redux-devtools-extension": "^2.13.9",
     "typescript": "^4.9.5",
+    "universal-cookie": "^7.1.4",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

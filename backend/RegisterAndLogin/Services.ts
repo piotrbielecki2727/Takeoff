@@ -4,6 +4,7 @@ import { HashPassword } from "./Utils/HashPassword";
 import { PasswordMatch } from "./Utils/PasswordMatch";
 import Queries from "./Queries";
 import { FormValues } from './Types';
+import { Response } from 'express';
 
 
 export async function getUserDetails(email: string): Promise<any> {
@@ -48,15 +49,14 @@ export async function getUserPasswordService(email: string): Promise<string> {
     });
 }
 
-export async function registerUserService(name: string, email: string, password: string): Promise<any> {
+export async function registerUserService(name: string, email: string, password: string, role: string): Promise<any> {
     const hashedPassword = await HashPassword(password);
     return new Promise((resolve, reject) => {
-        db.query(Queries.REGISTER, [name, email, hashedPassword], (err, result) => {
+        db.query(Queries.REGISTER, [name, email, hashedPassword, role], (err, result) => {
             if (err) {
                 console.error("Error while adding data to database.", err);
                 reject(err);
             } else {
-                console.log("User successfully registered.");
                 resolve(result);
             }
         });
@@ -75,6 +75,17 @@ export function loginUserService(formValues: FormValues, dbPassword: string): Pr
     });
 }
 
+export function logoutUserService(res: Response): Promise<string> {
+    return new Promise((resolve, reject) => {
+        try {
+            res.clearCookie('token');
+        }
+        catch (error) {
+            reject(error);
+        }
+    });
+}
+
 
 export function getUsers(): Promise<any> {
     return new Promise((resolve, reject) => {
@@ -82,7 +93,6 @@ export function getUsers(): Promise<any> {
             if (err) {
                 reject("Error while logging in");
             } else {
-                console.log(result);
                 resolve(result);
             }
         }
@@ -90,9 +100,9 @@ export function getUsers(): Promise<any> {
     })
 }
 
-export async function generateJWTToken(email: string, isAdmin: boolean): Promise<any> {
+export async function generateJWTToken(userId: string, role: string): Promise<any> {
     return new Promise((resolve, reject) => {
-        jwt.sign({ email, isAdmin }, 'secret_key', { expiresIn: '1h' }, (err, token) => {
+        jwt.sign({ userId, role }, 'VerySecretKey', { expiresIn: '1h' }, (err, token) => {
             if (err) {
                 console.error("Error while generating JWT token", err);
                 reject(err);

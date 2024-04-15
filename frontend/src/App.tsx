@@ -1,13 +1,10 @@
-import React from "react";
-import "./App.css";
-import LoginRegisterPage from "./Pages/LoginRegisterPage"
-import NavigateBar from "./Components/Navigation/NavigateBar";
+import Router from "./Routing/Router";
 
 function App() {
 
   return (
     <>
-      <LoginRegisterPage/>
+      <Router />
     </>
   );
 }

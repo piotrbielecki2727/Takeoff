@@ -10,19 +10,24 @@
 }
 
 .FormsErrors,
-.CheckFormError {
+.CheckFormError,
+.LoginRegisterError {
     color: red;
     z-index: 1;
     font-size: 12px;
     position: absolute;
-    top: 90%; 
-    left: 40px; 
-    margin-top: 0px; 
+    top: 90%;
+    left: 40px;
+    margin-top: 0px;
 }
 
 .CheckFormError {
     margin-top: -10px;
     margin-bottom: 10px;
+}
+
+.LoginRegisterError {
+    margin-left: 67px;
 }
 
 
@@ -91,7 +96,8 @@
 
 }
 
-.signInButton, .signUpButton {
+.signInButton,
+.signUpButton {
     margin-top: 5px;
 }
 

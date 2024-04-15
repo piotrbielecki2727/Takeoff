@@ -11,7 +11,7 @@ export async function handleRegisterController(req: Request, res: Response) {
         if (emailExists) {
             return res.json({ Error: "Email already exists." });
         } else {
-            const result = await registerUserService(formValues.name, formValues.email, formValues.password);
+            const result = await registerUserService(formValues.name, formValues.email, formValues.password, formValues.role);
             return res.json({ Success: "User successfully registered." });
         }
     } catch (error) {
@@ -30,9 +30,8 @@ export async function handleLoginController(req: Request, res: Response) {
         const receivedPassword = await getUserPasswordService(formValues.email)
         const result = await loginUserService(req.body, receivedPassword);
         const userDetails = await getUserDetails(formValues.email);
-        const token = await generateJWTToken(formValues.email, userDetails.isAdmin);
-        console.log(token);
-        return res.json({ Success: "Logged in!", token: token, isAdmin: userDetails.isAdmin });
+        const token = await generateJWTToken(userDetails.Id, userDetails.Role);
+        return res.json({ Success: "Logged in!", token: token});
     } catch (error) {
         if (error === "Incorrect password!") {
             return res.json({ Error: "Incorrect password!", errorType: "password" });
